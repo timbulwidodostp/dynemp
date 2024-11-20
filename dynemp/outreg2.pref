@@ -1,0 +1,3 @@
+29 Apr 2023
+using `"dynemp_DYNEMPREP_unit_sizecont2.txt"'
+excel nocons e(df_m r2_a) ctitle(5 freq)

@@ -1,0 +1,237 @@
+{smcl}
+{* 28January2013}{...}
+{hi:help dynemp}{right: ({browse "http://www.stata-journal.com/article.html?article=st0379":SJ15-1: st0379})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col:{hi:dynemp} {hline 2}}A routine for distributed microdata analysis of business dynamics{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax} 
+
+{p 8 14 2}{cmd:dynemp} {ifin}{cmd:,} 
+{cmd:country(}{it:country}{cmd:)}
+{cmd:unit(}{it:unit}{cmd:)}
+{cmd:id(}{it:varname}{cmd:)}
+{cmdab:emp:loyment}{cmd:(}{it:varname}{cmd:)}
+{cmd:year(}{it:varname}{cmd:)}
+{cmd:birth(}{it:varname}{cmd:)}
+{{cmd:isic3(}{it:varname}{cmd:)}|{cmd:isic4(}{it:varname}{cmd:)}}
+[{cmd:sectorchange}
+{opt newindyear(#)}
+{cmd:outputdir(}{it:string}{cmd:)}
+{cmd:blank}
+{cmdab:conf}{cmd:(}{it:#}{cmd:)}
+{cmdab:exp:ress}
+{cmdab:left:censoring}{cmd:(}{it:varname}{cmd:)}
+{cmdab:yeart}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:transyears}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:extraformat}{cmd:(}{it:string}{cmd:)}
+{cmdab:levels}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:exitdeath}{cmd:(}{it:varname}{cmd:)}
+{cmdab:exitchange}{cmd:(}{it:varname}{cmd:)}
+{cmd:noreg}
+{cmdab:regyear}{cmd:(}{it:numlist}{cmd:)}
+{cmdab:turnover}{cmd:(}{it:varname}{cmd:)}]
+
+
+{title:Description}
+
+{p 4 4 2}
+{cmd:dynemp} computes yearly data on employment growth dynamics and computes
+three-, five-, and seven-year transition matrices aggregated at the level of
+sector of activity, size class, and age class.  It also runs basic ordinary
+least-squares regressions of unit-level employment growth and exit probability
+on size and age class dummies and stores the regression coefficients.
+
+{p 4 4 2}
+{cmd:dynemp} is optimized to run with limited memory requirements, even with
+large datasets.  It produces several output files ({it:country} and {it:unit}
+are inputted by the user in the relative options): 
+
+{p 8 10 2}
+- the transitional matrices, named {cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_trans_mat.dta} 
+
+{p 8 10 2}
+- four datasets containing the aggregated statistics on yearly job flows, named
+{cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_lev}{it:N}{cmd:.dta}, where
+{it:N} goes from {cmd:1} to {cmd:4} 
+
+{p 8 10 2}
+- Extended Markup Language ({cmd:.xml}) files containing the results of the
+distributed regressions, named
+{cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_regexit.xml},
+{cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_reggrowth.xml},
+{cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_sizecont.xml}, and
+{cmd:dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_sizecont2.xml} 
+
+{p 8 10 2}
+- a tabulation of gaps in the data, named {cmd:Dynemp_}{it:country}{cmd:_}{it:unit}{cmd:_tabgaps.txt}  
+
+{p 4 4 2}
+Note: The input data file must be loaded in Stata (with the command
+{cmd:use}) before running {cmd:dynemp}.
+
+
+{title:Options} 
+
+{phang}
+{opt country(country)} specifies the name of the country.  {cmd:country()}  is
+required.
+
+{phang}
+{opt unit(unit)} specifies the unit of analysis (for example, plant or
+firm).  {cmd:unit()} is required.
+
+{phang}
+{opt id(varname)} indicates the variable containing the unique longitudinal
+unit identifier.  It can be either string or numeric.  {cmd:id()} is required.
+
+{phang}
+{opt employment(varname)} indicates the variable containing the unit's
+employment.  It can be either an integer or a noninteger.  {cmd:employment()} is
+required.
+
+{phang}
+{opt year(varname)}  indicates the year variable.  It must be an integer.
+{cmd:year()} is required.
+
+{phang}
+{opt birth(varname)} indicates the variable containing the unit's year of
+birth.  It must be an integer.  {cmd:birth()} is required.
+
+{phang}
+{opt isic3(varname)} indicates the variable containing the unit's industry;
+this must follow the International Standard Industrial Classification (ISIC)
+Rev. 3.1 classification at the three- or four-digit level.  It must be an
+integer.  Either {cmd:isic3()} or {cmd:isic4()} must be specified; both may be
+specified in a case where there is a change in classification over the sample
+period.
+
+{phang}
+{opt isic4(varname)} indicates the variable containing the unit's industry;
+this must follow the ISIC Rev. 4 classification at the three- or four-digit
+level. It must be an integer.  If {cmd:isic4()} is left empty, the external
+conversion table, {cmd:changeover_database.txt} (which is included in the
+command package), is required.  Either {cmd:isic4()} or {cmd:isic3()} must be
+specified; both may be specified in a case where there is a change in
+classification over the sample period.
+
+{phang}
+{opt sectorchange} specifies there is a change in classification over the
+sample period, that is, a change in sectoral classification from ISIC Rev. 3.1
+to ISIC Rev. 4 happens at some point in the dataset.  In such a case, both of
+the industry variable options ({cmd:isic3()} and {cmd:isic4()}) must be
+specified, although they can refer to the same variable.  {cmd:sectorchange}
+requires that the option {cmd:newindyear()} also be specified.
+
+{phang}
+{opt newindyear(#)} specifies the year in which the industrial classification
+changes from ISIC Rev. 3.1 to ISIC Rev. 4.  It must be an integer.
+{cmd:newindyear()} requires that the option {cmd:sectorchange} also be
+specified.  
+
+{phang}
+{opt outputdir(string)} specifies the output directory (for example,
+{cmd:C:\OECD\output}).  If not specified, the {cmd:OUTPUT_TOSEND} folder
+is created in your Stata working directory on Windows or in your home
+directory on Mac or Unix.
+
+{phang}
+{opt blank} sets to missing all the records referring to cells containing
+fewer units than the confidentiality level (which is set in option
+{cmd:conf()}; see below).
+
+{phang}
+{opt conf(#)} sets a confidentiality level, that is, the minimum number of
+units in a given cell.  The command also shows the number of cells below such
+level on screen, as a preview of the number of cells that are likely to be
+blanked.  It can be any positive integer. The default is {cmd:conf(5)}. 
+
+{phang}
+{opt express} runs a faster version of the code that excludes the calculation
+of percentiles.
+
+{phang}
+{opt leftcensoring(varname)} indicates the variable reporting the year of
+left-censoring in the business register.  It must be an integer.
+
+{phang}
+{opt yeart(numlist)} specifies the years over which the program will run.  The
+default is to start in 1998 and end in 2011 (or the latest available year).
+
+{phang}
+{opt transyears(numlist)} specifies the starting years of transition matrices.
+The default is {cmd:transyears(2001 2004 2007)}.
+
+{phang}
+{opt extraformat(string)} specifies additional formats for the output datasets.
+{it:string} may be {cmd:txt} (tab-separated) or {cmd:csv} (comma-separated),
+which correspond to the file extensions.
+
+{phang}
+{opt levels(numlist)} limits the yearly flow datasets to the selected
+aggregation levels.
+
+{phang}
+{opt exitdeath(varname)} identifies a binary variable (0/1) where 1 flags exit
+events due to the closing down of the business.  The variable should equal
+1 only in the unit's last year of appearance.
+
+{phang}
+{opt exitchange(varname)} identifies a binary variable (0/1) where 1
+corresponds to exit events due to a change in legal status, for example,
+mergers and acquisitions.  The variable should equal 1 only in
+the unit's last year of appearance.
+
+{phang}
+{opt noreg} tells the program not to run distributed regressions.
+
+{phang}
+{opt regyear(numlist)} specifies the years over which the program will run the
+regressions.  The default is to run them for all available years in the data.
+For example, if the chosen period is 2004-2008, the option would be
+{cmd:iregyear(2004(1)2008)}.
+
+{phang}
+{opt turnover(varname)} identifies the variable containing turnover values.  It
+must be numeric.
+
+
+{title:Example} 
+
+{phang}{cmd:. dynemp, id(idimp) year(yyear) employment(empl) country(DYNEMPREP) unit(unit) birth(birthyear) isic3(rsect) isic4(rsect) sectorchange newindyear(2008) exitchange(MeA) exitdeath(bankrupt)}
+
+
+{title:Authors}
+
+{p 4 4 2}Timbul Widodo{p_end}
+{pstd}Olah Data Semarang{p_end}
+{pstd}Semarang, Indonesian{p_end}
+{pstd}www.youtube.com/@amalsedekah
+
+{p 4 4 2}Chiara Criscuolo{p_end}
+{pstd}OECD{p_end}
+{pstd}Paris, France{p_end}
+{pstd}chiara.criscuolo@oecd.org
+
+{pstd}Peter N. Gal{p_end}
+{pstd}OECD{p_end}
+{pstd}Paris, France{p_end}
+{pstd}Tinbergen Institute and{p_end}
+{pstd}VU University Amsterdam{p_end}
+{pstd}Amsterdam, Netherlands{p_end}
+{pstd}peter.gal@oecd.org
+
+{pstd}Carlo Menon{p_end}
+{pstd}OECD{p_end}
+{pstd}Paris, France{p_end}
+{pstd}carlo.menon@oecd.org
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 15, number 1: {browse "http://www.stata-journal.com/article.html?article=st0379":st0379}{p_end}
