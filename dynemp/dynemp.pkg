@@ -1,5 +1,17 @@
-d 'DEA': Data envelopment analysis
+d 'dynemp': A routine for distributed microdata (micro-data) analysis of business dynamic (dynamics) Use dynemp With STATA 18
 d
-f dea.ado
-f dea.sthlp
-f coelli_table6.4.dta
+f dynemp.ado
+f dynemp.hlp
+f figout.ado
+f figout.hlp
+f outreg2.ado
+f outreg2.hlp
+f outreg2.pref
+f outreg2_prf.ado
+f seeout.ado
+f seeout.hlp
+f shellout.ado
+f shellout.hlp
+f tabout.ado
+f tabout.hlp
+f tabstatout.ado
