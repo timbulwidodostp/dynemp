@@ -1,6 +1,8 @@
 # dynemp
 A routine for distributed microdata (micro-data) analysis of business dynamic (dynamics) Use dynemp With STATA 18
 
+https://www.youtube.com/watch?v=3DkQH-5kDeo
+
 Olah Data Semarang
 
 WA : +6285227746673 (085227746673)
